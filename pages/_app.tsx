@@ -1,7 +1,22 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import type { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+    const theme = {
+        styles: {
+            global: {
+                "*": {
+                    margin: 0,
+                    padding: 0,
+                    boxSizing: "border-box"
+                },
+            },
+        },
+    };
+    return (
+        <ChakraProvider theme={extendTheme(theme)}>
+            <Component {...pageProps} />
+        </ChakraProvider>
+    );
 }
-export default MyApp
+export default MyApp;
