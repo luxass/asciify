@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
     Flex,
     Button,
@@ -11,6 +11,7 @@ import { AiOutlineUpload } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
 
 export default function Home() {
+    const [art, setArt] = useState<string>("");
     const onDrop = useCallback(async (acceptedFiles) => {
         const formData = new FormData();
         formData.append("file", acceptedFiles[0]);
@@ -18,7 +19,9 @@ export default function Home() {
             method: "POST",
             body: formData,
         });
-        const js = await response.json();
+        const artRes = await response.json();
+        console.log(artRes.art);
+        setArt(artRes.art);
     }, []);
 
     const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
@@ -36,36 +39,41 @@ export default function Home() {
     ));
 
     return (
-        <Flex
-            h="100vh"
-            justifyContent="center"
-            alignItems="center"
-            bg="#3772FF"
-        >
-            <Container h="500px" bg="white" borderRadius="25px" p="0">
-                <Center
-                    h="100%"
-                    w="100%"
-                    borderRadius="25px 0 0 25px"
-                    {...getRootProps({ className: "dropzone" })}
+        <>
+            {!art ? (
+                <Flex
+                    h="100vh"
+                    justifyContent="center"
+                    alignItems="center"
+                    bg={!art ? "#3772FF" : "white"}
                 >
-                    <input {...getInputProps()} />
-                    <VStack w="60%">
-                        <AiOutlineUpload color="#3772FF" size="100px" />
-                        <Text fontSize="25px">Drag and Drop file</Text>
-                        <Text fontSize="25px">or</Text>
-                        <Button
-                            bg="#3772FF"
-                            color="white"
-                            w="70%"
-                            onClick={open}
-                            mt="25px"
+                    <Container h="500px" bg="white" borderRadius="25px" p="0">
+                        <Center
+                            h="100%"
+                            w="100%"
+                            {...getRootProps({ className: "dropzone" })}
                         >
-                            Browse
-                        </Button>
-                    </VStack>
-                </Center>
-            </Container>
-        </Flex>
+                            <input {...getInputProps()} />
+                            <VStack w="60%">
+                                <AiOutlineUpload color="#3772FF" size="100px" />
+                                <Text fontSize="25px">Drag and Drop file</Text>
+                                <Text fontSize="25px">or</Text>
+                                <Button
+                                    bg="#3772FF"
+                                    color="white"
+                                    w="70%"
+                                    onClick={open}
+                                    mt="25px"
+                                >
+                                    Browse
+                                </Button>
+                            </VStack>
+                        </Center>
+                    </Container>
+                </Flex>
+            ) : (
+                <pre>{art}</pre>
+            )}
+        </>
     );
 }
